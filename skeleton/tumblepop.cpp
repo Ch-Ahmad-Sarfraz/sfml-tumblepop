@@ -70,6 +70,8 @@ int main()
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
 
+	int gameState = 0;
+
 	//level specifics
 	const int cell_size = 64;
 	const int height = 14;
@@ -81,6 +83,10 @@ int main()
 	Sprite bgSprite;
 	Texture blockTexture;
 	Sprite blockSprite;
+	Texture mainMenuTex;
+	Sprite mainMenuSprite;
+	Texture playerSelectTex;
+	Sprite playerSelectSprite;
 
 	bgTex.loadFromFile("Data/bg.png");
 	bgSprite.setTexture(bgTex);
@@ -88,6 +94,15 @@ int main()
 
 	blockTexture.loadFromFile("Data/block1.png");
 	blockSprite.setTexture(blockTexture);
+
+	mainMenuTex.loadFromFile("Data/mainMenu.png");
+	mainMenuSprite.setTexture(mainMenuTex);
+	mainMenuSprite.setPosition(0, 0);
+	mainMenuSprite.setScale(1.85f, 1.85f);
+
+	playerSelectTex.loadFromFile("Data/playerSelect.png");
+	playerSelectSprite.setTexture(playerSelectTex);
+	playerSelectSprite.setPosition(0, 0);
 
 	//Music initialisation
 	Music lvlMusic;
@@ -112,8 +127,13 @@ int main()
 	bool left_collide = false;
 	bool right_collide = false;
 
+	int playerNum = 0;
+
 	Texture PlayerTexture;
 	Sprite PlayerSprite;
+
+	Sprite player1ForSelectSprite;
+	Sprite player2ForSelectSprite;
 
 	bool onGround = false;
 
@@ -152,6 +172,12 @@ int main()
 	PlayerSprite.setScale(3,3);
 	PlayerSprite.setPosition(player_x, player_y);
 
+	player1ForSelectSprite.setTexture(PlayerTexture);
+	player2ForSelectSprite.setTexture(PlayerTexture);
+	player1ForSelectSprite.setPosition(screen_x / 5, screen_y / 3);
+	player2ForSelectSprite.setPosition(screen_x / 1.5f, screen_y / 3);
+	player1ForSelectSprite.setScale(7, 7);
+	player2ForSelectSprite.setScale(7, 7);
 
 	//creating level array
 	lvl = new char* [height];
@@ -189,11 +215,40 @@ int main()
 		}
 
 		window.clear();
+		
+		if(gameState == 0)
+		{
+			window.draw(mainMenuSprite);
 
-		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
-		player_gravity(lvl,offset_y,velocityY,onGround,gravity,terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
-		PlayerSprite.setPosition(player_x, player_y);
-		window.draw(PlayerSprite);
+			if(Keyboard::isKeyPressed(Keyboard::Enter))
+			{
+				gameState = 1;
+			}
+		}
+		else if(gameState == 1)
+		{
+			window.draw(playerSelectSprite);
+			window.draw(player1ForSelectSprite);
+			window.draw(player2ForSelectSprite);
+
+			if(Keyboard::isKeyPressed(Keyboard::Left))
+			{
+				playerNum = 1;
+				gameState = 2;
+			}
+			else if(Keyboard::isKeyPressed(Keyboard::Right))
+			{
+				playerNum = 2;
+				gameState = 2;
+			}
+		}
+		else if(gameState == 2)
+		{
+			display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
+			player_gravity(lvl,offset_y,velocityY,onGround,gravity,terminal_Velocity, player_x, player_y, cell_size, PlayerHeight, PlayerWidth);
+			PlayerSprite.setPosition(player_x, player_y);
+			window.draw(PlayerSprite);
+		}
 
 		window.display();
 	}
@@ -208,4 +263,3 @@ int main()
 
 	return 0;
 }
-
