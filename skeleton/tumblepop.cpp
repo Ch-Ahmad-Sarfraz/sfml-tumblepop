@@ -160,9 +160,41 @@ int main()
 		lvl[i] = new char[width];
 	}
 
+	for(int i = 0; i < height;i++){
+		for(int j =0; j < width; j++){
+		
+		lvl[i][j] = '.';
+		}
+	
+	}
+
 	lvl[7][7] = '#';
 	lvl[7][8] = '#';
 	lvl[7][9] = '#';
+	lvl[7][10] = '#';
+	lvl[10][4] = '#';
+	lvl[10][5] = '#';
+	lvl[10][6] = '#';
+	lvl[5][5] = '#';
+	lvl[5][6] = '#';
+	int j = 0;          //This is for the bottom so that the game doesn't end when the player falls down
+	while(j<width){
+	lvl[13][j] = '#';
+	j++;
+	}
+	
+	int i = 0;		//this is for the 
+	while(i<height){
+	lvl[i][0] = '#';
+	lvl[i][width-1] = '#';
+	i++;
+	}
+	
+	int s = 0;     //this is for the cieling so that the sprite doesn't move up out of the window
+	while(s<width){
+	lvl[0][s] = '#';
+	s++;
+	}
 
 	Event ev;
 	//main loop
@@ -187,7 +219,21 @@ int main()
 		{
 			window.close();
 		}
-
+		
+		if(Keyboard::isKeyPressed(Keyboard::Right)){
+		player_x = player_x + 5.f;
+		}
+		
+		if(Keyboard::isKeyPressed(Keyboard::Left))
+		{
+			player_x = player_x - 5.f;
+		}
+		
+		if(Keyboard::isKeyPressed(Keyboard::Up) && onGround){
+			velocityY = jumpStrength;
+			onGround = false;			
+		}
+		
 		window.clear();
 
 		display_level(window, lvl, bgTex, bgSprite, blockTexture, blockSprite, height, width, cell_size);
@@ -208,4 +254,3 @@ int main()
 
 	return 0;
 }
-
